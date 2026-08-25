@@ -1,0 +1,59 @@
+# Security&Fraud — Suspicious Web Activity
+# Operation Biscuit Breach
+# Dashboard: Security and Fraud Dashboard
+
+# SPL 1: Top Source IPs
+
+index=main sourcetype=access_combined
+| stats count by clientip
+| sort - count
+
+
+# SPL 2: Top Source IPs with Errors
+
+index=main sourcetype=access_combined status>=400
+| stats count by clientip
+| sort - count
+
+
+# SPL 3: Possible Reconnaissance Activity
+
+index=main sourcetype=access_combined status=404
+| stats count by clientip
+| sort - count
+
+
+# SPL 4: Possible Authentication Problems
+
+index=main sourcetype=access_combined status=401 OR status=403
+| stats count by clientip status
+| sort - count
+
+
+
+
+
+# SOC Level 1 Escalation to SOC Level 2
+# Operation Biscuit Breach
+
+
+# Investigation 1: High Volume of 404 Responses
+
+index=main sourcetype=access_combined status=404
+| stats count by clientip
+| where count > 20
+| sort - count
+
+
+# Investigation 2: Authentication / Access Failures
+
+index=main sourcetype=access_combined status=401 OR status=403
+| stats count by clientip status
+| sort - count
+
+
+# Investigation 3: Server-Side Errors
+
+index=main sourcetype=access_combined status=500 OR status=503
+| stats count by clientip status
+| sort - count

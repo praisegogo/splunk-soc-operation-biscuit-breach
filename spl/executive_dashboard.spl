@@ -1,0 +1,43 @@
+# Executive Web Operations
+# Operation Biscuit Breach
+# Dashboard: Executive Web Operations Dashboard
+
+
+# SPL 1: Total Requests
+
+index=main sourcetype=access_combined
+| stats count as total_requests
+
+
+# SPL 2: Success vs Failure
+
+index=main sourcetype=access_combined
+| eval result=if(status<400,"Success","Failure")
+| stats count by result
+
+
+# SPL 3: Status Codes Over Time
+
+index=main sourcetype=access_combined
+| timechart span=1h count by status
+
+
+# SPL 4: Failed Purchases
+
+index=main sourcetype=access_combined uri_path="/purchase" status>=400
+| stats count as failed_purchases
+
+
+# SPL 5: Estimated Lost Revenue
+
+index=main sourcetype=access_combined uri_path="/purchase" status>=400
+| eval estimated_lost_revenue=25
+| stats sum(estimated_lost_revenue) as total_lost_revenue
+
+
+# SPL 6: Top Error-Producing IPs
+
+index=main sourcetype=access_combined status>=400
+| stats count by clientip
+| sort - count
+| head 10

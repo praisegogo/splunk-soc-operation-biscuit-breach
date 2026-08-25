@@ -1,0 +1,45 @@
+# Task 9: Incident Response Mini-Playbook
+# Suspicious Web Activity
+
+
+
+# Step 1: Validate the Alert
+# Review the source IP, status codes, time period,
+# and requested pages identified during SOC Level 1.
+
+
+# Step 2: Enrich the Evidence
+# Retrieve detailed events associated with the escalated IP.
+
+index=main sourcetype=access_combined clientip="8.8.8.8"
+| table _time clientip method uri_path status useragent
+
+
+# Step 3: Classify the Activity
+# Possible classifications:
+# - Reconnaissance
+# - Authentication Abuse
+# - Broken Application Link
+# - Server-Side Failure
+# - Possible Denial of Service
+# - False Positive
+
+
+# Step 4: Containment Recommendation
+# Depending on severity:
+# - Monitor only
+# - Block IP temporarily
+# - Rate-limit requests
+# - Investigate user account
+# - Notify web/application team
+# - Raise incident ticket
+
+
+# Step 5: Document the Case
+# Record:
+# - Who detected it?
+# - What happened?
+# - When did it happen?
+# - Which systems were affected?
+# - What evidence was collected?
+# - What action was recommended?

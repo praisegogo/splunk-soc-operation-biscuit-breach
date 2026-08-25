@@ -1,0 +1,27 @@
+# IT Operations - Website Health Monitoring
+# Operation Biscuit Breach
+# Dashboard: IT Operations Dashboard
+
+
+# SPL 1 - Status Codes Over Time
+# Purpose: Monitor HTTP status-code activity over time.
+# Visualization: Column Chart
+
+index=main sourcetype=access_combined
+| timechart span=1h count by status
+
+
+# SPL 2 - Success vs Failure
+# Purpose: Compare successful requests with failed requests.
+
+index=main sourcetype=access_combined
+| eval result=if(status<400,"Success","Failure")
+| stats count by result
+
+
+# SPL 3 - Success vs Failure Over Time
+# Purpose: Monitor successful and failed requests on an hourly basis.
+
+index=main sourcetype=access_combined
+| eval result=if(status<400,"Success","Failure")
+| timechart span=1h count by result

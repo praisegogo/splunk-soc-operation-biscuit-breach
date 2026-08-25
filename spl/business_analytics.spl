@@ -1,0 +1,23 @@
+# Business Analytics — Failed Purchases and Lost Revenue
+# Operation Biscuit Breach
+# Dashboard: Business Analytics Dashboard
+
+
+# SPL 1: Failed Purchase Requests
+
+index=main sourcetype=access_combined uri_path="/purchase" status>=400
+| stats count as failed_purchases
+
+
+# SPL 2: Failed Purchases Over Time
+
+index=main sourcetype=access_combined uri_path="/purchase" status>=400
+| timechart span=1h count as failed_purchases
+
+
+# SPL 3: Estimate Lost Revenue
+# Assumption: Each failed purchase is worth £25.
+
+index=main sourcetype=access_combined uri_path="/purchase" status>=400
+| eval estimated_lost_revenue=25
+| stats sum(estimated_lost_revenue) as total_lost_revenue

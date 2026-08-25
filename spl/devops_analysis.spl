@@ -1,0 +1,41 @@
+# DevOps - Browser and Operating System Analysis
+# Operation Biscuit Breach
+# Dashboard: DevOps Dashboard
+
+
+# SPL 1 - Top User Agents
+# Purpose: Identify the user agents generating the most web traffic.
+
+index=main sourcetype=access_combined
+| top useragent
+
+
+# SPL 2 - Extract Platform from User-Agent
+# Purpose: Categorise traffic by operating system/platform.
+# Android is evaluated before Linux to prevent Android user agents containing "Linux" from being incorrectly classified as Linux.
+
+index=main sourcetype=access_combined
+| eval platform=case(
+like(useragent,"%Windows%"),"Windows",
+like(useragent,"%Macintosh%"),"MacOS",
+like(useragent,"%iPhone%"),"iPhone",
+like(useragent,"%Android%"),"Android",
+like(useragent,"%Linux%"),"Linux",
+true(),"Other")
+| stats count by platform
+| sort - count
+
+
+# SPL 3 - Browser Failures
+# Purpose: Identify which browsers are associated with failed HTTP requests.
+
+index=main sourcetype=access_combined status>=400
+| eval browser=case(
+like(useragent,"%Chrome%"),"Chrome",
+like(useragent,"%Firefox%"),"Firefox",
+like(useragent,"%Safari%"),"Safari",
+like(useragent,"%iPhone%"),"Mobile Safari",
+like(useragent,"%Android%"),"Android Browser",
+true(),"Other")
+| stats count by browser
+| sort - count
